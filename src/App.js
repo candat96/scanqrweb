@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { QrReader } from 'react-qr-reader';
 import HIDScanner from './scan';
 function App() {
   const [decodedText, setDecodedText] = useState('');
