@@ -1,13 +1,11 @@
-FROM node:20-alpine as build
-
+FROM node:16-alpine as build-stage
 WORKDIR /app
-COPY package*.json ./
-RUN npm install
 COPY . .
+RUN npm install
 RUN npm run build
+## các bạn có thể dùng yarn install .... tuỳ nhu cầu nhé
 
-FROM nginx:stable-alpine
-COPY --from=build /app/build /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/nginx.conf
-EXPOSE 80
+# production stage
+FROM nginx:1.17-alpine as production-stage
+COPY --from=build-stage /app/dist /usr/share/nginx/html
 CMD ["nginx", "-g", "daemon off;"]
