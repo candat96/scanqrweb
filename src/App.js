@@ -1,23 +1,36 @@
-import logo from './logo.svg';
-import './App.css';
-
+import React, { useState, useEffect } from 'react';
+import { QrReader } from 'react-qr-reader';
+import HIDScanner from './scan';
 function App() {
+  const [decodedText, setDecodedText] = useState('');
+
+  useEffect(() => {
+
+    initSerialPort();
+  }, []);
+  const initSerialPort = async () =>  {
+    if ("serial" in navigator) {
+      console.log("Awesome, The serial port is supported.")
+      // The Web Serial API is supported.
+   
+      navigator.serial.getPorts().then((ports) => {
+        // Initialize the list of available ports with `ports` on page load.
+        console.log('List ports ', ports);
+
+      });
+    }
+  }
+  const openSerialPort = async () => {
+    const port = await navigator.serial.requestPort();
+    await port.open({ baudRate: 9600 });
+    const { usbProductId, usbVendorId } = port.getInfo();
+    console.log(port.getInfo())
+  }
+  
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <HIDScanner/>
     </div>
   );
 }
